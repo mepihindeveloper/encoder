@@ -1,10 +1,10 @@
-# Example Huffman coding implementation
-# Distributions are represented as dictionaries of { 'symbol': probability }
-# Codes are dictionaries too: { 'symbol': 'codeword' }
+# -*- coding: utf8 -*-
+import sys
+import time
 
 def huffman(p):
     '''Return a Huffman code for an ensemble with distribution p.'''
-    assert(sum(p.values()) == 1.0) # Ensure probabilities sum to 1
+    #assert(sum(p.values()) == 1.0) # Ensure probabilities sum to 1
 
     # Base case of only two symbols, assign 0 or 1 arbitrarily
     if(len(p) == 2):
@@ -31,6 +31,37 @@ def lowest_prob_pair(p):
     sorted_p = sorted(p.items(), key=lambda x: x[1])	
     return sorted_p[0][0], sorted_p[1][0]
 
-# Example execution 
-ex2 = { 'a': 0.25, 'b': 0.25, 'c': 0.2, 'd': 0.15, 'e': 0.15 } # Сюда частотную характеристику
-print (huffman(ex2))  # => {'a': '01', 'c': '00', 'b': '10', 'e': '110', 'd': '111'}
+def calculate(code):
+    return sys.getsizeof(code) / 1024
+
+def freq():
+	b = {}
+	c = 0
+	with open('message.txt',"r") as f:
+		for l in f.read():
+			l = l.lower()
+			if (l in 'abcdefghijklmnopqrstuvwxyz0123456789.,:/+-?!()%= '):
+				c +=1
+				if (l in b):
+					b[l] +=1
+				else:
+					b[l] = 1
+	ex = {}
+	#s = 0;
+	for u in b.keys():
+	#	print('Символ {} занимает {:.1f}% текста'.format(u,10/c*b[u]))
+		ex[u] = (100/c*b[u]);
+	#	s += (100/c*b[u]);
+	return ex
+	
+start_time = time.time()
+freq = huffman(freq());
+encoded_message = '';
+with open('message.txt',"r") as f:
+	for l in f.read():
+		l = l.lower()
+		if (l in freq):
+			encoded_message += freq[l];
+			
+print("--- %s seconds ---" % (time.time() - start_time))
+print("%.5f" % calculate(encoded_message) + "КБ")
